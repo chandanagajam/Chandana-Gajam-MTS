@@ -1,0 +1,172 @@
+Question 1:
+
+app.module.ts
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import {FormsModule,ReactiveFormsModule} from '@angular/forms';
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,FormsModule,ReactiveFormsModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+app.component.html
+<div class="panel panel-default" style="width:900px">
+ <div class="panel-body">
+   <div class="card" style="margin-left:300px; margin-top:50px">
+      <img [src]="imageLocation" width="100%" height="50%" style="padding:15px">
+     <div class="card-body">
+      <h4>Category : {{productTitle}}</h4>
+      <h4>Category : {{productPrice | currency:"INR"}}</h4>
+      <h4>Category : {{stock}}</h4>
+     </div>
+  
+     <button type="button" style="background-color:orange;color:whitesmoke;width:150px;margin-left:170px;margin-bottom:20px">ADD TO CART</button>
+  </div>
+  </div>
+
+
+</div>
+
+
+app.component.ts
+import { Component } from '@angular/core';
+import {FormGroup, FormControl, Validators} from '@angular/forms';
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'Product';
+  productTitle:string="SAMSUNG";
+  productPrice:number=30000;
+  stock:number=5;
+  imageLocation:string='../assets/mobile.jpg';
+  
+}
+
+
+Question 3:
+
+app.component.html
+<div class="container">
+  <h3>PRODUCT DETAILS</h3>
+  <form [formGroup]="myform" (ngSubmit)="store()">
+    <div class="form-group" >
+      <label for="pname">PRODUCT NAME</label>
+      <input type="text" class="form-control" id="pname"  formControlName="pname">
+      <small style="color:red" *ngIf="eid && pname.invalid && pname.touched">*NAME IS REQUIRED</small>
+       
+    </div>
+    <div class="form-group">
+      <label for="pbrand">PRODUCT BRAND</label>
+      <input type="text" class="form-control" id="pbrand" formControlName="pbrand">
+      <div *ngIf="pbrand.touched && pbrand.invalid">
+      <small style="color:red" *ngIf="pbrand.errors.required">*BRAND IS REQUIRED</small><br/>
+
+        </div>
+    </div>
+    <div class="form-group">
+      <label for="pprice">PRODUCT PRICE</label>
+      <input type="text" class="form-control" id="pprice" formControlName="pprice">
+      <div *ngIf="pprice.touched && pprice.invalid">
+        <small style="color:red" *ngIf="pprice.errors.required">*PRICE IS REQUIRED</small><br/>
+          </div>
+     </div>
+     <button class="btn btn-primary" [disabled]="emsform.invalid">STORE</button>
+  </form>
+</div>
+<table border="1" width="100%"></table>
+<div style="margin-top:10px;">
+          <div class="product details">
+            <table class="table">
+              <thead class="thed-light">
+                <tr>
+                  <td>PRODUCT NAME</td>
+                  <td>PRODUCT BRAND</td>
+                  <td>PRODUCT PRICE</td>
+                </tr>
+                <tr *ngFor="let emp of employees">
+                  <td>{{prd.pname}}</td>
+                  <td>{{prd.pbrand}}</td>
+                  <td>{{prd.pprice}}</td>
+            </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{{pname}}</td>
+                  <td>{{pbrand}}</td>
+                  <td>{{pprice}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+</div>
+
+
+app.component.ts
+import { Component } from '@angular/core';
+import { FormGroup, FormControl,Validators } from '@angular/forms'; 
+import { product } from './product';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title="PRODUCT DETAILS";
+  myform:FormGroup; 
+  products:product[]=[];
+  pname:string; 
+  pbrand:string; 
+  pprice:number; 
+    constructor(){ 
+    this.myform=new FormGroup({
+    name:new FormControl(null,[Validators.required]),
+    brand:new FormControl(null,[Validators.required,]),
+    price:new FormControl(null,[Validators.required,])
+  });
+ } 
+
+store(){
+  this.products.push(new product(this.myform.value.pname,this.myform.value.pbrand,this.myform.value.pprice ));
+  console.log(this.products)
+}
+   get name(){
+     return this.myform.get('pname');
+   }
+
+   get brand(){
+    return this.myform.get('pbrand');
+  }
+  get price(){
+    return this.myform.get('pprice');
+  }
+
+ 
+
+}
+
+product.ts
+export class product{
+    pname:string; 
+    pbrand:string; 
+    pprice:number; 
+     constructor( pname,pbrand,pprice){
+      this.pname=pname;
+      this. pbrand= pbrand;
+      this.pprice=pprice;
+    }
+  }
+
